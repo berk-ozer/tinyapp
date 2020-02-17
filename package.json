@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/berk-ozer/tinyapp/issues"
   },
-  "homepage": "https://github.com/berk-ozer/tinyapp#readme"
+  "homepage": "https://github.com/berk-ozer/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
