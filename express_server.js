@@ -1,6 +1,12 @@
+////////////////////////////////////////////////////////////////////////
+/*
+Basic configurations
+Variables
+Functions
+*/
 const express = require('express');
 const app = express();
-const PORT = 8080; //default port 8080
+const PORT = 8080;
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -23,6 +29,10 @@ const generateRandomString = () => {
   return randomString;
 };
 
+////////////////////////////////////////////////////////////////////////
+/*
+Routing
+*/
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
