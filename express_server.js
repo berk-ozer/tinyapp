@@ -21,6 +21,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {};
+
 const generateRandomString = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomString = '';
@@ -115,6 +117,18 @@ app.post('/logout', (req, res) => {
 app.get('/register', (req, res) => {
   let templateVars = {username: req.cookies['username']};
   res.render('urls_registration', templateVars);
+});
+
+// register functionality
+app.post('/register', (req, res) => {
+  const userID = generateRandomString();
+  users[userID] = {
+    userID,
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie('user_id', userID);
+  res.redirect('/urls');
 });
 
 // server listen
