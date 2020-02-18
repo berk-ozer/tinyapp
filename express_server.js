@@ -11,6 +11,9 @@ const PORT = 8080;
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
@@ -47,7 +50,7 @@ app.get('/hello', (req, res) => {
 
 // urls index page
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase, username: req.cookies['username'] };
   res.render('urls_index', templateVars);
 });
 
@@ -61,12 +64,13 @@ app.post('/urls', (req, res) => {
 
 // new url creation page
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  let templateVars = {username: req.cookies['username']};
+  res.render('urls_new', templateVars);
 });
 
 // short URL page showing the short/long versions
 app.get('/urls/:shortURL', (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies['username'] };
   res.render('urls_show', templateVars);
 });
 
@@ -94,6 +98,18 @@ app.get('/u/:shortURL', (req, res) => {
     res.send('<h2>404 Not Found<br>This short URL does not exist.</h2>')
   }
 });
+
+// login functionality
+app.post('/login', (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect('/urls');
+});
+
+// logout functionality
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
+})
 
 // server listen
 app.listen(PORT, () => {
