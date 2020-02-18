@@ -70,6 +70,13 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+// updates the longURL in the database
+app.post('/urls/:shortURL', (req, res) => {
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = req.body.updatedURL;
+  res.redirect(`/urls/${shortURL}`);
+});
+
 // deletes a url from database, redirects to index page
 app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[req.params.shortURL];
