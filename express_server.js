@@ -118,8 +118,19 @@ app.get('/login', (req, res) => {
 
 // login functionality
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  const user = findUserWithEmailInDatabase(req.body.email, users);
+  if (user) {
+    if (req.body.password === user.password) {
+      res.cookie('user_id', user.userID);
+      res.redirect('/urls');
+    } else {
+      res.statusCode = 403;
+      res.send('<h2>403 Forbidden<br>You entered the wrong password.</h2>')
+    }
+  } else {
+    res.statusCode = 403;
+    res.send('<h2>403 Forbidden<br>This email address is not registered.</h2>')
+  }
 });
 
 // logout functionality
