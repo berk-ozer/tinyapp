@@ -21,6 +21,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {};
+
 const generateRandomString = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomString = '';
@@ -30,6 +32,15 @@ const generateRandomString = () => {
   }
 
   return randomString;
+};
+
+const findUserWithEmailInDatabase = (email, database) => {
+  for (const user in database) {
+    if (database[user].email === email) {
+      return database[user];
+    }
+  }
+  return undefined;
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -50,7 +61,7 @@ app.get('/hello', (req, res) => {
 
 // urls index page
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase, username: req.cookies['username'] };
+  let templateVars = { urls: urlDatabase, user: users[req.cookies['user_id']] };
   res.render('urls_index', templateVars);
 });
 
@@ -64,13 +75,13 @@ app.post('/urls', (req, res) => {
 
 // new url creation page
 app.get('/urls/new', (req, res) => {
-  let templateVars = {username: req.cookies['username']};
+  let templateVars = {user: users[req.cookies['user_id']]};
   res.render('urls_new', templateVars);
 });
 
 // short URL page showing the short/long versions
 app.get('/urls/:shortURL', (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies['username'] };
+  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies['user_id']] };
   res.render('urls_show', templateVars);
 });
 
@@ -99,17 +110,62 @@ app.get('/u/:shortURL', (req, res) => {
   }
 });
 
+// login page
+app.get('/login', (req, res) => {
+  let templateVars = {user: users[req.cookies['user_id']]};
+  res.render('urls_login', templateVars);
+});
+
 // login functionality
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  const user = findUserWithEmailInDatabase(req.body.email, users);
+  if (user) {
+    if (req.body.password === user.password) {
+      res.cookie('user_id', user.userID);
+      res.redirect('/urls');
+    } else {
+      res.statusCode = 403;
+      res.send('<h2>403 Forbidden<br>You entered the wrong password.</h2>')
+    }
+  } else {
+    res.statusCode = 403;
+    res.send('<h2>403 Forbidden<br>This email address is not registered.</h2>')
+  }
 });
 
 // logout functionality
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 })
+
+// registration page
+app.get('/register', (req, res) => {
+  let templateVars = {user: users[req.cookies['user_id']]};
+  res.render('urls_registration', templateVars);
+});
+
+// register functionality
+app.post('/register', (req, res) => {
+  if (req.body.email && req.body.password) {
+    if (!findUserWithEmailInDatabase(req.body.email, users)) {
+      const userID = generateRandomString();
+      users[userID] = {
+        userID,
+        email: req.body.email,
+        password: req.body.password
+      }
+      res.cookie('user_id', userID);
+      res.redirect('/urls');
+    } else {
+      res.statusCode = 400;
+      res.send('<h2>400  Bad Request<br>Email already registered.</h2>')
+    }
+  } else {
+    res.statusCode = 400;
+    res.send('<h2>400  Bad Request<br>Please fill out the email and password fields.</h2>')
+  }
+});
 
 // server listen
 app.listen(PORT, () => {
