@@ -34,14 +34,14 @@ const generateRandomString = () => {
   return randomString;
 };
 
-const findEmailInDatabase = (email, database) => {
+const findUserWithEmailInDatabase = (email, database) => {
   for (const user in database) {
     if (database[user].email === email) {
       return database[user];
     }
   }
   return undefined;
-}
+};
 
 ////////////////////////////////////////////////////////////////////////
 /*
@@ -137,7 +137,7 @@ app.get('/register', (req, res) => {
 // register functionality
 app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
-    if (!findEmailInDatabase(req.body.email, users)) {
+    if (!findUserWithEmailInDatabase(req.body.email, users)) {
       const userID = generateRandomString();
       users[userID] = {
         userID,
