@@ -99,7 +99,9 @@ app.get('/urls/new', (req, res) => {
 
 // short URL page showing the short/long versions
 app.get('/urls/:shortURL', (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies['user_id']] };
+  const userID = req.cookies['user_id'];
+  const userUrls = urlsForUser(userID);
+  let templateVars = { urls: userUrls, user: users[userID], shortURL: req.params.shortURL };
   res.render('urls_show', templateVars);
 });
 
