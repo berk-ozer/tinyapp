@@ -34,6 +34,15 @@ const generateRandomString = () => {
   return randomString;
 };
 
+const findEmailInDatabase = (email) => {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return true;
+    }
+  }
+  return false;
+}
+
 ////////////////////////////////////////////////////////////////////////
 /*
 Routing
@@ -121,14 +130,24 @@ app.get('/register', (req, res) => {
 
 // register functionality
 app.post('/register', (req, res) => {
-  const userID = generateRandomString();
-  users[userID] = {
-    userID,
-    email: req.body.email,
-    password: req.body.password
+  if (req.body.email && req.body.password) {
+    if (!findEmailInDatabase(req.body.email)) {
+      const userID = generateRandomString();
+      users[userID] = {
+        userID,
+        email: req.body.email,
+        password: req.body.password
+      }
+      res.cookie('user_id', userID);
+      res.redirect('/urls');
+    } else {
+      res.statusCode = 400;
+      res.send('<h2>400  Bad Request<br>Email already registered.</h2>')
+    }
+  } else {
+    res.statusCode = 400;
+    res.send('<h2>400  Bad Request<br>Please fill out the email and password fields.</h2>')
   }
-  res.cookie('user_id', userID);
-  res.redirect('/urls');
 });
 
 // server listen
