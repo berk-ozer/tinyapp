@@ -39,6 +39,18 @@ const findUserWithEmailInDatabase = (email, database) => {
   return undefined;
 };
 
+const urlsForUser = (id) => {
+  let userUrls = {};
+
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      userUrls[shortURL] = urlDatabase[shortURL];
+    }
+  }
+
+  return userUrls;
+};
+
 ////////////////////////////////////////////////////////////////////////
 /*
 Routing
@@ -57,7 +69,9 @@ app.get('/hello', (req, res) => {
 
 // urls index page
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase, user: users[req.cookies['user_id']] };
+  const userID = req.cookies['user_id'];
+  const userUrls = urlsForUser(userID);
+  let templateVars = { urls: userUrls, user: users[userID] };
   res.render('urls_index', templateVars);
 });
 
