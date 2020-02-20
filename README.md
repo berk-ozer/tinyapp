@@ -8,8 +8,8 @@ Because there can never be enough cat videos on the internet.
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Screenshot of urls page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/urls-page.png?raw=true)
+!["Screenshot of registration page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/registration-page.png?raw=true)
 
 ## Dependencies
 
