@@ -134,7 +134,7 @@ app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
 
   if (longURL) {
-    res.redirect(urlDatabase[req.params.shortURL].longURL);
+    res.redirect(longURL);
   } else {
     res.statusCode = 404;
     res.send('<h2>404 Not Found<br>This short URL does not exist.</h2>')
