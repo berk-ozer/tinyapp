@@ -32,7 +32,7 @@ const generateRandomString = () => {
   return randomString;
 };
 
-const findUserWithEmailInDatabase = (email, database) => {
+const getUserByEmail = (email, database) => {
   for (const user in database) {
     if (database[user].email === email) {
       return database[user];
@@ -151,7 +151,7 @@ app.get('/login', (req, res) => {
 
 // login functionality
 app.post('/login', (req, res) => {
-  const user = findUserWithEmailInDatabase(req.body.email, users);
+  const user = getUserByEmail(req.body.email, users);
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
       req.session.user_id = user.userID;
@@ -182,7 +182,7 @@ app.get('/register', (req, res) => {
 // register functionality
 app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
-    if (!findUserWithEmailInDatabase(req.body.email, users)) {
+    if (!getUserByEmail(req.body.email, users)) {
       const userID = generateRandomString();
       users[userID] = {
         userID,
