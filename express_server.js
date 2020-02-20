@@ -116,13 +116,12 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 // redirect from short url to the long (actual) urls
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-
-  if (longURL) {
-    res.redirect(longURL);
+  if (urlDatabase[req.params.shortURL]){
+    res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
+    let templateVars = { urlDatabase: {}, shortURL: '', user: users[req.session.user_id] };
     res.statusCode = 404;
-    res.send('<h2>404 Not Found<br>This short URL does not exist.</h2>')
+    res.render('urls_show', templateVars);
   }
 });
 
