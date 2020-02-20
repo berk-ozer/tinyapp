@@ -66,5 +66,5 @@ describe('#urlsForUser', () => {
   it('should return an empty obhect for a non-existent user', () => {
     const userUrls = urlsForUser('crystal', testUrls);
     assert.deepEqual(userUrls, {});
-  })
-})
+  });
+});

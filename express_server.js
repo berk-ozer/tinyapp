@@ -28,7 +28,7 @@ const users = {};
 Routing
 */
 
-// root 
+// root
 // redirects to /urls if logged in, otherwise to /login
 app.get('/', (req, res) => {
   if (req.session.userID) {
@@ -52,7 +52,7 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-// new url creation 
+// new url creation
 // adds new url to database, redirects to urls show page
 app.post('/urls', (req, res) => {
   const shortURL = generateRandomString();
@@ -61,7 +61,7 @@ app.post('/urls', (req, res) => {
     userID: req.session.userID
   };
   res.redirect(`/urls/${shortURL}`);
-})
+});
 
 // new url creation page
 // validates if the user is logged in before displaying page
@@ -90,7 +90,7 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-// url edit 
+// url edit
 // validates if the url belongs to current user, then updates longURL
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
@@ -116,7 +116,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 // redirect from short url to the long (actual) urls
 app.get('/u/:shortURL', (req, res) => {
-  if (urlDatabase[req.params.shortURL]){
+  if (urlDatabase[req.params.shortURL]) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
     let templateVars = { urlDatabase: {}, shortURL: '', user: users[req.session.userID] };
@@ -145,11 +145,11 @@ app.post('/login', (req, res) => {
       res.redirect('/urls');
     } else {
       res.statusCode = 403;
-      res.send('<h2>403 Forbidden<br>You entered the wrong password.</h2>')
+      res.send('<h2>403 Forbidden<br>You entered the wrong password.</h2>');
     }
   } else {
     res.statusCode = 403;
-    res.send('<h2>403 Forbidden<br>This email address is not registered.</h2>')
+    res.send('<h2>403 Forbidden<br>This email address is not registered.</h2>');
   }
 });
 
@@ -158,7 +158,7 @@ app.post('/logout', (req, res) => {
   res.clearCookie('session');
   res.clearCookie('session.sig');
   res.redirect('/urls');
-})
+});
 
 // registration page
 app.get('/register', (req, res) => {
@@ -180,16 +180,16 @@ app.post('/register', (req, res) => {
         userID,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10)
-      }
+      };
       req.session.userID = userID;
       res.redirect('/urls');
     } else {
       res.statusCode = 400;
-      res.send('<h2>400  Bad Request<br>Email already registered.</h2>')
+      res.send('<h2>400  Bad Request<br>Email already registered.</h2>');
     }
   } else {
     res.statusCode = 400;
-    res.send('<h2>400  Bad Request<br>Please fill out the email and password fields.</h2>')
+    res.send('<h2>400  Bad Request<br>Please fill out the email and password fields.</h2>');
   }
 });
 
