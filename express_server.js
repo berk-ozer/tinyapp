@@ -105,16 +105,27 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-// updates the longURL in the database
+// edits the longURL in the database
+// validates if the url belongs to current user
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  urlDatabase[shortURL].longURL = req.body.updatedURL;
+
+  if (req.cookies['user_id'] === urlDatabase[shortURL].userID) {
+    urlDatabase[shortURL].longURL = req.body.updatedURL;
+  }
+
   res.redirect(`/urls/${shortURL}`);
 });
 
-// deletes a url from database, redirects to index page
+// deletes a url from database
+// validates if the url belongs to current user
 app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  const shortURL = req.params.shortURL;
+
+  if (req.cookies['user_id'] === urlDatabase[shortURL].userID) {
+    delete urlDatabase[shortURL];
+  }
+
   res.redirect('/urls');
 });
 
