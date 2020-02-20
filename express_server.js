@@ -55,12 +55,17 @@ app.get('/urls', (req, res) => {
 // new url creation
 // adds new url to database, redirects to urls show page
 app.post('/urls', (req, res) => {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = {
+  if (req.session.userID) {
+    const shortURL = generateRandomString();
+    urlDatabase[shortURL] = {
     longURL: req.body.longURL,
     userID: req.session.userID
-  };
-  res.redirect(`/urls/${shortURL}`);
+    };
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    const errorMessage = 'You must be logged in to do that.';
+    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage})
+  }
 });
 
 // new url creation page
