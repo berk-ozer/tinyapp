@@ -38,14 +38,6 @@ app.get('/', (req, res) => {
   }
 });
 
-app.get('/urls.json', (req, res) => {
-  res.send(users);
-});
-
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
-});
-
 // urls index page
 app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
