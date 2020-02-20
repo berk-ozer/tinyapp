@@ -14,6 +14,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+const bcrypt = require('bcrypt');
+
 app.set('view engine', 'ejs');
 
 const urlDatabase = {};
@@ -60,7 +62,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls.json', (req, res) => {
-  res.send(urlDatabase);
+  res.send(users);
 });
 
 app.get('/hello', (req, res) => {
@@ -184,7 +186,7 @@ app.post('/register', (req, res) => {
       users[userID] = {
         userID,
         email: req.body.email,
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 10)
       }
       res.cookie('user_id', userID);
       res.redirect('/urls');
