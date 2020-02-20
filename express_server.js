@@ -28,7 +28,8 @@ const users = {};
 Routing
 */
 
-// root redirects to /urls if logged in, otherwise to /login
+// root 
+// redirects to /urls if logged in, otherwise to /login
 app.get('/', (req, res) => {
   if (req.session.user_id) {
     res.redirect('/urls');
@@ -50,6 +51,11 @@ app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
   const userUrls = urlsForUser(userID, urlDatabase);
   let templateVars = { urls: userUrls, user: users[userID] };
+  
+  if (!userID) {
+    res.statusCode = 401;
+  }
+  
   res.render('urls_index', templateVars);
 });
 
