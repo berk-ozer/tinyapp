@@ -179,12 +179,12 @@ app.post('/register', (req, res) => {
       req.session.userID = userID;
       res.redirect('/urls');
     } else {
-      res.statusCode = 400;
-      res.send('<h2>400  Bad Request<br>Email already registered.</h2>');
+      const errorMessage = 'Cannot create new account, because this email address is already registered.'
+      res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage})
     }
   } else {
-    res.statusCode = 400;
-    res.send('<h2>400  Bad Request<br>Please fill out the email and password fields.</h2>');
+    const errorMessage = 'Empty username or password. Please make sure you fill out both fields.'
+    res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage})
   }
 });
 
