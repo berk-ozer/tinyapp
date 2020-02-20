@@ -23,12 +23,12 @@ const { getUserByEmail, generateRandomString } = require('./helpers');
 const urlDatabase = {};
 const users = {};
 
-const urlsForUser = (id) => {
+const urlsForUser = (id, database) => {
   let userUrls = {};
 
-  for (const shortURL in urlDatabase) {
-    if (urlDatabase[shortURL].userID === id) {
-      userUrls[shortURL] = urlDatabase[shortURL];
+  for (const shortURL in database) {
+    if (database[shortURL].userID === id) {
+      userUrls[shortURL] = database[shortURL];
     }
   }
 
@@ -54,7 +54,7 @@ app.get('/hello', (req, res) => {
 // urls index page
 app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
-  const userUrls = urlsForUser(userID);
+  const userUrls = urlsForUser(userID, urlDatabase);
   let templateVars = { urls: userUrls, user: users[userID] };
   res.render('urls_index', templateVars);
 });
@@ -84,7 +84,7 @@ app.get('/urls/new', (req, res) => {
 // short URL page showing the short/long versions
 app.get('/urls/:shortURL', (req, res) => {
   const userID = req.session.user_id;
-  const userUrls = urlsForUser(userID);
+  const userUrls = urlsForUser(userID, urlDatabase);
   let templateVars = { urls: userUrls, user: users[userID], shortURL: req.params.shortURL };
   res.render('urls_show', templateVars);
 });
