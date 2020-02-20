@@ -95,11 +95,13 @@ app.get('/urls/:shortURL', (req, res) => {
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
 
-  if (req.session.userID === urlDatabase[shortURL].userID) {
+  if (req.session.userID  && req.session.userID === urlDatabase[shortURL].userID) {
     urlDatabase[shortURL].longURL = req.body.updatedURL;
+    res.redirect(`/urls`);
+  } else {
+    const errorMessage = 'You are not authorized to do that.';
+    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage})
   }
-
-  res.redirect(`/urls`);
 });
 
 // delete url
