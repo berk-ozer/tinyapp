@@ -162,6 +162,11 @@ app.post('/logout', (req, res) => {
 
 // registration page
 app.get('/register', (req, res) => {
+  if (req.session.user_id) {
+    res.redirect('/urls');
+    return;
+  }
+  
   let templateVars = {user: users[req.session.user_id]};
   res.render('urls_registration', templateVars);
 });
