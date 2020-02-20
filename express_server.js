@@ -76,9 +76,17 @@ app.get('/urls/new', (req, res) => {
 
 // short url page showing the short/long versions of the url
 app.get('/urls/:shortURL', (req, res) => {
+  const shortURL = req.params.shortURL;
   const userID = req.session.user_id;
   const userUrls = urlsForUser(userID, urlDatabase);
-  let templateVars = { urls: userUrls, user: users[userID], shortURL: req.params.shortURL };
+  let templateVars = { urlDatabase, userUrls, shortURL, user: users[userID] };
+
+  if (!urlDatabase[shortURL]) {
+    res.statusCode = 404;
+  } else if (!userID || !userUrls[shortURL]) {
+    res.statusCode = 401;
+  }
+  
   res.render('urls_show', templateVars);
 });
 

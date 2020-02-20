@@ -9,30 +9,34 @@
 <body>
   <%- include('partials/_header') %>
 
-  <% if (user) { %>
-    <% if (urls[shortURL]) { %>
-  <div class="card text-center">
-      <div class="card-header"></div>
-      <div class="card-body">
-        <h5 class="card-title">TinyURL for: <%= urls[shortURL].longURL %></h5>
-        <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
-      </div>
-      <div class="card-footer text-muted">
-        <h4>Edit</h4>
-        <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
-        <div class="form-group mb-2 mx-auto">
-          <label for="updatedURL">New URL:</label>
-          <input class="form-control" type="text" name="updatedURL" placeholder="http://" style="width: 300px; margin: 1em">
-          <button type="submit" class="btn btn-primary">Submit</button>
+  <% if (urlDatabase[shortURL]) { %>
+    <% if (user) { %>
+      <% if (userUrls[shortURL]) { %>
+    <div class="card text-center">
+        <div class="card-header"></div>
+        <div class="card-body">
+          <h5 class="card-title">TinyURL for: <%= userUrls[shortURL].longURL %></h5>
+          <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
         </div>
-        </form>
-      </div>
-  </div>
+        <div class="card-footer text-muted">
+          <h4>Edit</h4>
+          <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
+          <div class="form-group mb-2 mx-auto">
+            <label for="updatedURL">New URL:</label>
+            <input class="form-control" type="text" name="updatedURL" placeholder="http://" style="width: 300px; margin: 1em">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+          </form>
+        </div>
+    </div>
+      <% } else { %>
+        <h5 class="text-muted mt-4" style="margin: 1em;">You cannot see this URL because it doesn't belong to you.</h5>
+      <% } %>
     <% } else { %>
-      <h5 class="text-muted mt-4" style="margin: 1em;">You cannot see this URL because it doesn't belong to you.</h5>
+      <h5 class="text-muted mt-4" style="margin: 1em;">You must first login to see this URL.</h5>
     <% } %>
   <% } else { %>
-    <h5 class="text-muted mt-4" style="margin: 1em;">You must login or register to see this URL.</h5>
+    <h5 class="text-muted mt-4" style="margin: 1em;">This short URL does not exist.</h5>
   <% } %>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
