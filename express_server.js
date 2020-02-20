@@ -31,7 +31,7 @@ Routing
 // root 
 // redirects to /urls if logged in, otherwise to /login
 app.get('/', (req, res) => {
-  if (req.session.user_id) {
+  if (req.session.userID) {
     res.redirect('/urls');
   } else {
     res.redirect('/login');
@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 // urls index page
 // shows urls that belong to the user, if they are logged in
 app.get('/urls', (req, res) => {
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const userUrls = urlsForUser(userID, urlDatabase);
   let templateVars = { urls: userUrls, user: users[userID] };
   
@@ -58,7 +58,7 @@ app.post('/urls', (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
-    userID: req.session.user_id
+    userID: req.session.userID
   };
   res.redirect(`/urls/${shortURL}`);
 })
@@ -66,8 +66,8 @@ app.post('/urls', (req, res) => {
 // new url creation page
 // validates if the user is logged in before displaying page
 app.get('/urls/new', (req, res) => {
-  if (req.session.user_id) {
-    let templateVars = {user: users[req.session.user_id]};
+  if (req.session.userID) {
+    let templateVars = {user: users[req.session.userID]};
     res.render('urls_new', templateVars);
   } else {
     res.redirect('/login');
@@ -77,7 +77,7 @@ app.get('/urls/new', (req, res) => {
 // short url page showing the short/long versions of the url
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const userUrls = urlsForUser(userID, urlDatabase);
   let templateVars = { urlDatabase, userUrls, shortURL, user: users[userID] };
 
@@ -95,7 +95,7 @@ app.get('/urls/:shortURL', (req, res) => {
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
 
-  if (req.session.user_id === urlDatabase[shortURL].userID) {
+  if (req.session.userID === urlDatabase[shortURL].userID) {
     urlDatabase[shortURL].longURL = req.body.updatedURL;
   }
 
@@ -107,7 +107,7 @@ app.post('/urls/:shortURL', (req, res) => {
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
 
-  if (req.session.user_id === urlDatabase[shortURL].userID) {
+  if (req.session.userID === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
   }
 
@@ -119,7 +119,7 @@ app.get('/u/:shortURL', (req, res) => {
   if (urlDatabase[req.params.shortURL]){
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
-    let templateVars = { urlDatabase: {}, shortURL: '', user: users[req.session.user_id] };
+    let templateVars = { urlDatabase: {}, shortURL: '', user: users[req.session.userID] };
     res.statusCode = 404;
     res.render('urls_show', templateVars);
   }
@@ -127,12 +127,12 @@ app.get('/u/:shortURL', (req, res) => {
 
 // login page
 app.get('/login', (req, res) => {
-  if (req.session.user_id) {
+  if (req.session.userID) {
     res.redirect('/urls');
     return;
   }
 
-  let templateVars = {user: users[req.session.user_id]};
+  let templateVars = {user: users[req.session.userID]};
   res.render('urls_login', templateVars);
 });
 
@@ -141,7 +141,7 @@ app.post('/login', (req, res) => {
   const user = getUserByEmail(req.body.email, users);
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
-      req.session.user_id = user.userID;
+      req.session.userID = user.userID;
       res.redirect('/urls');
     } else {
       res.statusCode = 403;
@@ -162,12 +162,12 @@ app.post('/logout', (req, res) => {
 
 // registration page
 app.get('/register', (req, res) => {
-  if (req.session.user_id) {
+  if (req.session.userID) {
     res.redirect('/urls');
     return;
   }
-  
-  let templateVars = {user: users[req.session.user_id]};
+
+  let templateVars = {user: users[req.session.userID]};
   res.render('urls_registration', templateVars);
 });
 
@@ -181,7 +181,7 @@ app.post('/register', (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10)
       }
-      req.session.user_id = userID;
+      req.session.userID = userID;
       res.redirect('/urls');
     } else {
       res.statusCode = 400;
