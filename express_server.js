@@ -39,6 +39,7 @@ app.get('/', (req, res) => {
 });
 
 // urls index page
+// shows urls that belong to the user, if they are logged in
 app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
   const userUrls = urlsForUser(userID, urlDatabase);
@@ -51,8 +52,8 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-// new url creation functionality
-// creates new url and adds it to the database
+// new url creation 
+// adds new url to database, redirects to urls show page
 app.post('/urls', (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = {
@@ -73,7 +74,7 @@ app.get('/urls/new', (req, res) => {
   }
 });
 
-// short URL page showing the short/long versions
+// short url page showing the short/long versions of the url
 app.get('/urls/:shortURL', (req, res) => {
   const userID = req.session.user_id;
   const userUrls = urlsForUser(userID, urlDatabase);
@@ -81,8 +82,8 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-// edits the longURL in the database
-// validates if the url belongs to current user
+// url edit 
+// validates if the url belongs to current user, then updates longURL
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
 
@@ -93,7 +94,7 @@ app.post('/urls/:shortURL', (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-// deletes a url from database
+// delete url
 // validates if the url belongs to current user
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
@@ -105,7 +106,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 });
 
-// redirection from short url to the long (actual) urls
+// redirect from short url to the long (actual) urls
 app.get('/u/:shortURL', (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
 
@@ -123,7 +124,7 @@ app.get('/login', (req, res) => {
   res.render('urls_login', templateVars);
 });
 
-// login functionality
+// logging in
 app.post('/login', (req, res) => {
   const user = getUserByEmail(req.body.email, users);
   if (user) {
@@ -140,7 +141,7 @@ app.post('/login', (req, res) => {
   }
 });
 
-// logout functionality
+// loggin out
 app.post('/logout', (req, res) => {
   res.clearCookie('session');
   res.clearCookie('session.sig');
@@ -153,7 +154,7 @@ app.get('/register', (req, res) => {
   res.render('urls_registration', templateVars);
 });
 
-// register functionality
+// registering
 app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
     if (!getUserByEmail(req.body.email, users)) {
