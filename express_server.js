@@ -99,7 +99,7 @@ app.post('/urls/:shortURL', (req, res) => {
     urlDatabase[shortURL].longURL = req.body.updatedURL;
   }
 
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`/urls`);
 });
 
 // delete url
@@ -127,6 +127,11 @@ app.get('/u/:shortURL', (req, res) => {
 
 // login page
 app.get('/login', (req, res) => {
+  if (req.session.user_id) {
+    res.redirect('/urls');
+    return;
+  }
+
   let templateVars = {user: users[req.session.user_id]};
   res.render('urls_login', templateVars);
 });
