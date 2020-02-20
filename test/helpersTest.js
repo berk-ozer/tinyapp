@@ -1,6 +1,8 @@
 const assert = require('chai').assert;
 
-const { getUserByEmail } = require('../helpers');
+const { getUserByEmail, urlsForUser } = require('../helpers');
+
+// getUserByEmail Test
 
 const testUsers = {
   'abc': {
@@ -26,3 +28,43 @@ describe('#getUserByEmail', () => {
     assert.equal(user, undefined);
   });
 });
+
+// urlsForUser Test
+
+const testUrls = {
+  'abcd': {
+    longURL: 'http://www.google.com',
+    userID: 'james'
+  },
+  'xywz': {
+    longURL: 'http://www.reddit.com',
+    userID: 'sarah'
+  },
+  'jfkd': {
+    longURL: 'http://www.facebook.com',
+    userID: 'james'
+  }
+};
+
+describe('#urlsForUser', () => {
+  it('should return the corresponding urls for a valid user', () => {
+    const userUrls = urlsForUser('james', testUrls);
+    const expectedResult = {
+      'abcd': {
+        longURL: 'http://www.google.com',
+        userID: 'james'
+      },
+      'jfkd': {
+        longURL: 'http://www.facebook.com',
+        userID: 'james'
+      }
+    };
+
+    assert.deepEqual(userUrls, expectedResult);
+  });
+
+  it('should return an empty obhect for a non-existent user', () => {
+    const userUrls = urlsForUser('crystal', testUrls);
+    assert.deepEqual(userUrls, {});
+  })
+})
