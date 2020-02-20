@@ -139,17 +139,12 @@ app.get('/login', (req, res) => {
 // logging in
 app.post('/login', (req, res) => {
   const user = getUserByEmail(req.body.email, users);
-  if (user) {
-    if (bcrypt.compareSync(req.body.password, user.password)) {
+  if (user && bcrypt.compareSync(req.body.password, user.password)) {
       req.session.userID = user.userID;
       res.redirect('/urls');
-    } else {
-      res.statusCode = 403;
-      res.send('<h2>403 Forbidden<br>You entered the wrong password.</h2>');
-    }
   } else {
-    res.statusCode = 403;
-    res.send('<h2>403 Forbidden<br>This email address is not registered.</h2>');
+    const errorMessage = 'Login credentials not valid. Please make sure you enter the correct username and password.'
+    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage});
   }
 });
 
