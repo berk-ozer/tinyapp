@@ -12,8 +12,6 @@ Because there can never be enough cat videos on the internet.
 
 !["Screenshot of registration page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/registration-page.png?raw=true)
 
-<br>
-
 !["Screenshot of new url page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/newurl-page.png?raw=true)
 
 ## Dependencies
