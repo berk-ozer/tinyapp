@@ -18,22 +18,10 @@ const bcrypt = require('bcrypt');
 
 app.set('view engine', 'ejs');
 
-const { getUserByEmail, generateRandomString } = require('./helpers');
+const { getUserByEmail, generateRandomString, urlsForUser } = require('./helpers');
 
 const urlDatabase = {};
 const users = {};
-
-const urlsForUser = (id, database) => {
-  let userUrls = {};
-
-  for (const shortURL in database) {
-    if (database[shortURL].userID === id) {
-      userUrls[shortURL] = database[shortURL];
-    }
-  }
-
-  return userUrls;
-};
 
 ////////////////////////////////////////////////////////////////////////
 /*
