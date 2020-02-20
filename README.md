@@ -9,7 +9,12 @@ Because there can never be enough cat videos on the internet.
 ## Final Product
 
 !["Screenshot of urls page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/urls-page.png?raw=true)
+
 !["Screenshot of registration page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/registration-page.png?raw=true)
+
+<br>
+
+!["Screenshot of new url page"](https://github.com/berk-ozer/tinyapp/blob/master/docs/newurl-page.png?raw=true)
 
 ## Dependencies
 
