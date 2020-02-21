@@ -62,13 +62,13 @@ app.post('/urls', (req, res) => {
   if (req.session.userID) {
     const shortURL = generateRandomString();
     urlDatabase[shortURL] = {
-    longURL: req.body.longURL,
-    userID: req.session.userID
+      longURL: req.body.longURL,
+      userID: req.session.userID
     };
     res.redirect(`/urls/${shortURL}`);
   } else {
     const errorMessage = 'You must be logged in to do that.';
-    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage})
+    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage});
   }
 });
 
@@ -93,10 +93,10 @@ app.get('/urls/:shortURL', (req, res) => {
 
   if (!urlDatabase[shortURL]) {
     const errorMessage = 'This short URL does not exist.';
-    res.status(404).render('urls_error', {user: users[userID], errorMessage})
+    res.status(404).render('urls_error', {user: users[userID], errorMessage});
   } else if (!userID || !userUrls[shortURL]) {
-    const errorMessage = 'You are not authorized to see this URL.'
-    res.status(401).render('urls_error', {user: users[userID], errorMessage})
+    const errorMessage = 'You are not authorized to see this URL.';
+    res.status(401).render('urls_error', {user: users[userID], errorMessage});
   } else {
     res.render('urls_show', templateVars);
   }
@@ -112,7 +112,7 @@ app.post('/urls/:shortURL', (req, res) => {
     res.redirect(`/urls`);
   } else {
     const errorMessage = 'You are not authorized to do that.';
-    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage})
+    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage});
   }
 });
 
@@ -126,8 +126,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
     res.redirect('/urls');
   } else {
     const errorMessage = 'You are not authorized to do that.';
-    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage})
-  }  
+    res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage});
+  }
 });
 
 // redirecting - GET
@@ -159,10 +159,10 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const user = getUserByEmail(req.body.email, users);
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
-      req.session.userID = user.userID;
-      res.redirect('/urls');
+    req.session.userID = user.userID;
+    res.redirect('/urls');
   } else {
-    const errorMessage = 'Login credentials not valid. Please make sure you enter the correct username and password.'
+    const errorMessage = 'Login credentials not valid. Please make sure you enter the correct username and password.';
     res.status(401).render('urls_error', {user: users[req.session.userID], errorMessage});
   }
 });
@@ -201,12 +201,12 @@ app.post('/register', (req, res) => {
       req.session.userID = userID;
       res.redirect('/urls');
     } else {
-      const errorMessage = 'Cannot create new account, because this email address is already registered.'
-      res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage})
+      const errorMessage = 'Cannot create new account, because this email address is already registered.';
+      res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage});
     }
   } else {
-    const errorMessage = 'Empty username or password. Please make sure you fill out both fields.'
-    res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage})
+    const errorMessage = 'Empty username or password. Please make sure you fill out both fields.';
+    res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage});
   }
 });
 
