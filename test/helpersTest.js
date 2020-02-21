@@ -3,7 +3,6 @@ const assert = require('chai').assert;
 const { getUserByEmail, urlsForUser } = require('../helpers');
 
 // getUserByEmail Test
-
 const testUsers = {
   'abc': {
     id: 'abc',
@@ -30,7 +29,6 @@ describe('#getUserByEmail', () => {
 });
 
 // urlsForUser Test
-
 const testUrls = {
   'abcd': {
     longURL: 'http://www.google.com',
