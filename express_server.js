@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   const userID = req.session.userID;
   const userUrls = urlsForUser(userID, urlDatabase);
-  let templateVars = { urls: userUrls, user: users[userID] };
+  const templateVars = { urls: userUrls, user: users[userID] };
   
   if (!userID) {
     res.statusCode = 401;
@@ -76,7 +76,7 @@ app.post('/urls', (req, res) => {
 // validates if the user is logged in before displaying page
 app.get('/urls/new', (req, res) => {
   if (req.session.userID) {
-    let templateVars = {user: users[req.session.userID]};
+    const templateVars = {user: users[req.session.userID]};
     res.render('urls_new', templateVars);
   } else {
     res.redirect('/login');
@@ -89,7 +89,7 @@ app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const userID = req.session.userID;
   const userUrls = urlsForUser(userID, urlDatabase);
-  let templateVars = { urlDatabase, userUrls, shortURL, user: users[userID] };
+  const templateVars = { urlDatabase, userUrls, shortURL, user: users[userID] };
 
   if (!urlDatabase[shortURL]) {
     const errorMessage = 'This short URL does not exist.';
@@ -136,9 +136,8 @@ app.get('/u/:shortURL', (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
-    let templateVars = { urlDatabase: {}, shortURL: '', user: users[req.session.userID] };
-    res.statusCode = 404;
-    res.render('urls_show', templateVars);
+    const errorMessage = 'This short URL does not exist.';
+    res.status(404).render('urls_error', {user: users[req.session.userID], errorMessage});
   }
 });
 
@@ -150,7 +149,7 @@ app.get('/login', (req, res) => {
     return;
   }
 
-  let templateVars = {user: users[req.session.userID]};
+  const templateVars = {user: users[req.session.userID]};
   res.render('urls_login', templateVars);
 });
 
@@ -184,7 +183,7 @@ app.get('/register', (req, res) => {
     return;
   }
 
-  let templateVars = {user: users[req.session.userID]};
+  const templateVars = {user: users[req.session.userID]};
   res.render('urls_registration', templateVars);
 });
 
@@ -206,7 +205,7 @@ app.post('/register', (req, res) => {
       const errorMessage = 'Cannot create new account, because this email address is already registered.';
       res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage});
     }
-    
+
   } else {
     const errorMessage = 'Empty username or password. Please make sure you fill out both fields.';
     res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage});
