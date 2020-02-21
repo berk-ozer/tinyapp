@@ -87,12 +87,14 @@ app.get('/urls/:shortURL', (req, res) => {
   let templateVars = { urlDatabase, userUrls, shortURL, user: users[userID] };
 
   if (!urlDatabase[shortURL]) {
-    res.statusCode = 404;
+    const errorMessage = 'This short URL does not exist.';
+    res.status(404).render('urls_error', {user: users[userID], errorMessage})
   } else if (!userID || !userUrls[shortURL]) {
-    res.statusCode = 401;
+    const errorMessage = 'You are not authorized to see this URL.'
+    res.status(401).render('urls_error', {user: users[userID], errorMessage})
+  } else {
+    res.render('urls_show', templateVars);
   }
-  
-  res.render('urls_show', templateVars);
 });
 
 // url edit
