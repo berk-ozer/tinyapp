@@ -158,6 +158,7 @@ app.get('/login', (req, res) => {
 // redirects to urls index page if credentials are valid
 app.post('/login', (req, res) => {
   const user = getUserByEmail(req.body.email, users);
+
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
     req.session.userID = user.userID;
     res.redirect('/urls');
@@ -191,6 +192,7 @@ app.get('/register', (req, res) => {
 // redirects to urls index page if credentials are valid
 app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
+
     if (!getUserByEmail(req.body.email, users)) {
       const userID = generateRandomString();
       users[userID] = {
@@ -204,6 +206,7 @@ app.post('/register', (req, res) => {
       const errorMessage = 'Cannot create new account, because this email address is already registered.';
       res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage});
     }
+    
   } else {
     const errorMessage = 'Empty username or password. Please make sure you fill out both fields.';
     res.status(400).render('urls_error', {user: users[req.session.userID], errorMessage});
