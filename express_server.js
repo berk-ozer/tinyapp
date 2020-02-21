@@ -1,9 +1,11 @@
 ////////////////////////////////////////////////////////////////////////
 /*
-Basic configurations
-Variables
-Functions
+SETUP
+FUNCTIONS
+VARIABLES
 */
+
+// app config
 const express = require('express');
 const app = express();
 const PORT = 8080;
@@ -18,17 +20,19 @@ const bcrypt = require('bcrypt');
 
 app.set('view engine', 'ejs');
 
+// functions
 const { getUserByEmail, generateRandomString, urlsForUser } = require('./helpers');
 
+// variables
 const urlDatabase = {};
 const users = {};
 
 ////////////////////////////////////////////////////////////////////////
 /*
-Routing
+ROUTING
 */
 
-// root
+// root - GET
 // redirects to /urls if logged in, otherwise to /login
 app.get('/', (req, res) => {
   if (req.session.userID) {
@@ -38,7 +42,7 @@ app.get('/', (req, res) => {
   }
 });
 
-// urls index page
+// urls index page - GET
 // shows urls that belong to the user, if they are logged in
 app.get('/urls', (req, res) => {
   const userID = req.session.userID;
@@ -52,8 +56,8 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-// new url creation
-// adds new url to database, redirects to urls show page
+// new url creation - POST
+// adds new url to database, redirects to short url page
 app.post('/urls', (req, res) => {
   if (req.session.userID) {
     const shortURL = generateRandomString();
@@ -68,7 +72,7 @@ app.post('/urls', (req, res) => {
   }
 });
 
-// new url creation page
+// new url creation page - GET
 // validates if the user is logged in before displaying page
 app.get('/urls/new', (req, res) => {
   if (req.session.userID) {
@@ -79,7 +83,8 @@ app.get('/urls/new', (req, res) => {
   }
 });
 
-// short url page showing the short/long versions of the url
+// short url page - GET
+// shows details about the url if it belongs to user
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const userID = req.session.userID;
@@ -97,8 +102,8 @@ app.get('/urls/:shortURL', (req, res) => {
   }
 });
 
-// url edit
-// validates if the url belongs to current user, then updates longURL
+// url edit - POST
+// updates longURL if url belongs to user
 app.post('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
 
@@ -111,8 +116,8 @@ app.post('/urls/:shortURL', (req, res) => {
   }
 });
 
-// delete url
-// validates if the url belongs to current user
+// delete url - POST
+// deletes url from database if it belongs to user
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
 
@@ -125,7 +130,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   }  
 });
 
-// redirect from short url to the long (actual) urls
+// redirecting - GET
+// redirects to the long (actual) url
 app.get('/u/:shortURL', (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
@@ -136,7 +142,8 @@ app.get('/u/:shortURL', (req, res) => {
   }
 });
 
-// login page
+// login page - GET
+// redirects to urls index page if already logged in
 app.get('/login', (req, res) => {
   if (req.session.userID) {
     res.redirect('/urls');
@@ -147,7 +154,8 @@ app.get('/login', (req, res) => {
   res.render('urls_login', templateVars);
 });
 
-// logging in
+// logging in - POST
+// redirects to urls index page if credentials are valid
 app.post('/login', (req, res) => {
   const user = getUserByEmail(req.body.email, users);
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
@@ -159,14 +167,16 @@ app.post('/login', (req, res) => {
   }
 });
 
-// loggin out
+// logging out - POST
+// clears cookies and redirects to urls index page
 app.post('/logout', (req, res) => {
   res.clearCookie('session');
   res.clearCookie('session.sig');
   res.redirect('/urls');
 });
 
-// registration page
+// registration page - GET
+// redirects to urls index page if already logged in
 app.get('/register', (req, res) => {
   if (req.session.userID) {
     res.redirect('/urls');
@@ -177,7 +187,8 @@ app.get('/register', (req, res) => {
   res.render('urls_registration', templateVars);
 });
 
-// registering
+// registering - POST
+// redirects to urls index page if credentials are valid
 app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
     if (!getUserByEmail(req.body.email, users)) {
